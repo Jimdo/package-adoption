@@ -1,7 +1,7 @@
 {
-  "name": "typescript-npm-package-template",
-  "version": "0.0.0-development",
-  "description": "A template for creating npm packages using TypeScript and VSCode",
+  "name": "package-adoption",
+  "version": "1.0.0",
+  "description": "Find out where a js package is used across a GitHub organization, output its version and position in each repository",
   "main": "./lib/src/index.js",
   "files": [
     "lib/**/*"
@@ -19,32 +19,33 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ryansonshine/typescript-npm-package-template.git"
+    "url": "git+https://github.com/Jimdo/package-adoption.git"
   },
   "license": "MIT",
   "author": {
-    "name": "Ryan Sonshine",
-    "email": "ryansonshine@users.noreply.github.com",
-    "url": "https://github.com/ryansonshine"
+    "name": "Stefania Mellai"
   },
   "engines": {
     "node": ">=12.0"
   },
   "keywords": [
-    "boilerplate",
-    "template",
-    "typescript",
-    "vscode",
-    "jest",
-    "husky",
-    "commitizen",
-    "semantic-release",
-    "codecov"
+    "library",
+    "adoption",
+    "stats",
+    "statistics",
+    "dependency",
+    "visibility",
+    "usage",
+    "dependency"
   ],
   "bugs": {
-    "url": "https://github.com/ryansonshine/typescript-npm-package-template/issues"
+    "url": "https://github.com/Jimdo/package-adoption/issues"
   },
-  "homepage": "https://github.com/ryansonshine/typescript-npm-package-template#readme",
+  "homepage": "https://github.com/Jimdo/package-adoption#readme",
+  "dependencies": {
+    "@octokit/rest": "^19.0.4",
+    "type-fest": "^2.19.0"
+  },
   "devDependencies": {
     "@ryansonshine/commitizen": "^4.2.8",
     "@ryansonshine/cz-conventional-changelog": "^3.3.4",
