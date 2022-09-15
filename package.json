@@ -36,13 +36,17 @@
     "dependency",
     "visibility",
     "usage",
-    "dependency"
+    "dependency",
+    "repositories",
+    "private"
   ],
   "bugs": {
     "url": "https://github.com/Jimdo/package-adoption/issues"
   },
   "homepage": "https://github.com/Jimdo/package-adoption#readme",
   "dependencies": {
+    "@octokit/plugin-retry": "^3.0.9",
+    "@octokit/plugin-throttling": "^4.3.0",
     "@octokit/rest": "^19.0.4",
     "type-fest": "^2.19.0"
   },

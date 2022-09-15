@@ -9,6 +9,12 @@
 
 Find out where a ts/js package is used across a GitHub organization, version and position of the package for each repository.
 
+Usage for `pkgName` will be analyzed across `org`, excluding repositories that did not receive any commit in the last `daysUntilStale` days. A GitHub [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with scope `repo` is required, to access the `org` **private repositories** through GitHub APIs.
+
+> :warning: GitHub API are rate limited, and search API in particular has the additional [secondary rate limit](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#secondary-rate-limits). _package-adoption_ implements the [Best Practices guidelines](https://docs.github.com/en/rest/guides/best-practices-for-integrators#dealing-with-secondary-rate-limits) to deal with it, but you should know that limitations could happen in any case.
+
+> :warning: GitHub search is not 100% reliable and sometimes returns deleted / outdated files or multiple versions of the same file. The library version in the output could be inaccurate for this reason.
+
 ## Install
 
 ```bash
@@ -29,14 +35,22 @@ const result = getFilteredReposWithPackageForOrg(
 /* => [
   {
     name: 'repo-1',
-    installationPath: 'src/package.json',
+    installationPath: 'root',
     libVersion: '55.0.0-beta.13',
   },
   {
     name: 'repo-2',
-    installationPath: 'package.json',
+    installationPath: 'packages/package-name1',
     libVersion: '65.2.0',
+    "isPeerDep": true,
+    "isDevDep": true
   },
+  {
+    name: 'repo-2',
+    installationPath: 'packages/package-name2',
+    libVersion: '65.2.1',
+    "isDevDep": true
+  }
 ]; */
 ```
 

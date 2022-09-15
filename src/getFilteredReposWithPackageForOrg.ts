@@ -1,11 +1,16 @@
 import { isStale } from './isRepoStale';
 import { Octokit } from '@octokit/rest';
+import { retry } from '@octokit/plugin-retry';
+import { throttling } from '@octokit/plugin-throttling';
 import { PackageJson } from 'type-fest';
+import path from 'path';
 
 export type RelevantRepo = {
   name: string;
   installationPath: string;
   libVersion: string;
+  isPeerDep?: boolean;
+  isDevDep?: boolean;
 };
 
 type OctokitRepo = {
@@ -19,10 +24,16 @@ type ErrorWithResponse = {
   response: ErrorResponse;
 };
 
+type ErrorRetryRequest = {
+  retryCount: number;
+};
+
 type ErrorResponse = {
   status: number;
   url: string;
   data: Error;
+  method: string;
+  request: ErrorRetryRequest;
 };
 
 export const getFilteredReposWithPackageForOrg = async (
@@ -31,12 +42,35 @@ export const getFilteredReposWithPackageForOrg = async (
   ghAuthToken: string,
   pkgName: string
 ): Promise<RelevantRepo[] | undefined> => {
-  const octokit = new Octokit({
+  const OctokitWithRetry = Octokit.plugin(retry, throttling);
+  const octokit = new OctokitWithRetry({
     auth: ghAuthToken,
+    throttle: {
+      onRateLimit: (retryAfter: number, options: ErrorResponse) => {
+        octokit.log.warn(
+          `Request quota exhausted for request ${options.method} ${options.url}`
+        );
+
+        if (options.request.retryCount === 0) {
+          // only retries once
+          octokit.log.info(`Retrying after ${retryAfter} seconds!`);
+          return true;
+        }
+      },
+      onSecondaryRateLimit: (retryAfter: number, options: ErrorResponse) => {
+        // does not retry, only logs a warning
+        octokit.log.warn(
+          `Abuse detected for request ${options.method} ${options.url}`
+        );
+      },
+    },
+    retry: {
+      doNotRetry: ['429', '404'],
+    },
   });
 
   console.log(
-    `[getFilteredReposWithPackageForOrg]: 🔍 Finding Relevant FE repositories for ${org.toUpperCase()}...`
+    `[package-adoption]: 🔍 Scan ${org.toUpperCase()} repositories in search of ${pkgName} ...`
   );
 
   const repositoriesWithPackage: RelevantRepo[] = [];
@@ -63,8 +97,23 @@ export const getFilteredReposWithPackageForOrg = async (
             for (let i = 0; i < foundFiles.length; i++) {
               const packageJsonFile = foundFiles[i];
 
-              // The search matches package-lock too
-              if (packageJsonFile.name === 'package.json') {
+              const pathDirParts = packageJsonFile.path
+                .split(path.sep)
+                .slice(0, -1);
+
+              const installationPath =
+                pathDirParts?.length > 0 ? path.join(...pathDirParts) : 'root';
+
+              if (
+                // The search matches package-lock too
+                packageJsonFile.name === 'package.json' &&
+                // sometimes GitHub search returns multiple versions of the same file
+                !repositoriesWithPackage.find(
+                  relevantRepo =>
+                    relevantRepo.name === repo.name &&
+                    relevantRepo.installationPath === installationPath
+                )
+              ) {
                 try {
                   const { data } = await octokit.repos.getContent({
                     owner: org,
@@ -80,22 +129,33 @@ export const getFilteredReposWithPackageForOrg = async (
                       ).toString()
                     );
 
-                    // TODO check devDependencies and peerDependecies?
-                    const libVersion = pkg.dependencies?.[pkgName];
+                    const libVersionDep = pkg.dependencies?.[pkgName];
+                    const libVersionPeer = pkg.peerDependencies?.[pkgName];
+                    const libVersionDev = pkg.devDependencies?.[pkgName];
+
+                    const libVersion =
+                      libVersionDep || libVersionPeer || libVersionDev;
                     if (libVersion) {
-                      // console.log(`[getFilteredReposWithPackageForOrg]: ${repo.name} has ${PKG_NAME}, version ${libVersion}`);
+                      console.log(
+                        `[package-adoption]: ${repo.name} has ${pkgName}, version ${libVersion} at ${installationPath}`
+                      );
+
                       repositoriesWithPackage.push({
                         name: repo.name,
-                        installationPath: packageJsonFile.path,
+                        installationPath,
                         libVersion,
+                        ...(!!libVersionPeer && {
+                          isPeerDep: !!libVersionPeer,
+                        }),
+                        ...(!!libVersionDev && { isDevDep: !!libVersionDev }),
                       });
                     }
                   }
                 } catch (error) {
+                  const typeSafeError = error as ErrorWithResponse;
                   console.error(
-                    '[getFilteredReposWithPackageForOrg]: Error reading package.json file'
+                    `[package-adoption]: Error reading package.json file\n${typeSafeError?.response?.url}`
                   );
-                  console.log(error);
                 }
               }
             }
@@ -106,11 +166,12 @@ export const getFilteredReposWithPackageForOrg = async (
               console.error(error);
             } else if (typeSafeError.response.status === 404) {
               console.error(
-                `[getFilteredReposWithPackageForOrg]: ${typeSafeError?.response?.url} -- No package.json found.`
+                `[package-adoption]: No package.json found.\n${typeSafeError?.response?.url}\n\n`
               );
             } else if (typeSafeError.response.status === 403) {
+              // API rate limit exceeded for user ID
               console.error(
-                `[getFilteredReposWithPackageForOrg]: ${typeSafeError?.response?.url} -- ${typeSafeError?.response?.data.message}`
+                `[package-adoption]: ${typeSafeError?.response?.data.message}\n${typeSafeError?.response?.url}\n\n`
               );
             } else {
               console.error(typeSafeError.response);
@@ -122,6 +183,6 @@ export const getFilteredReposWithPackageForOrg = async (
 
     return repositoriesWithPackage;
   } catch (error) {
-    console.error('[getFilteredReposWithPackageForOrg]:', error);
+    console.error('[package-adoption]:', error);
   }
 };
