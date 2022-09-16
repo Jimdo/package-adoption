@@ -97,9 +97,7 @@ export const getFilteredReposWithPackageForOrg = async (
             for (let i = 0; i < foundFiles.length; i++) {
               const packageJsonFile = foundFiles[i];
 
-              const pathDirParts = packageJsonFile.path
-                .split(path.sep)
-                .slice(0, -1);
+              const pathDirParts = packageJsonFile.path.split('/').slice(0, -1);
 
               const installationPath =
                 pathDirParts?.length > 0 ? path.join(...pathDirParts) : 'root';
