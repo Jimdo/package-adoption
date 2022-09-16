@@ -54,6 +54,26 @@ const result = getFilteredReposWithPackageForOrg(
 ]; */
 ```
 
+## Run CLI
+
+```bash
+npm install -g package-adoption
+
+package-adoption --config /path/to/config.js --output /path/to/output.json
+```
+
+If output option omitted, `package-adoption` ouputs to stdout.
+When config option omitted, default for config file will be local `config.js`. The file must export an object like this:
+
+```ts
+module.exports = {
+  ORG: 'myOrg',
+  DAYS_UNTIL_STALE: 90,
+  GH_AUTHTOKEN: 'my-GH-auth-token',
+  PKG_NAME: 'myPkg',
+};
+```
+
 [build-img]: https://github.com/jimdo/package-adoption/actions/workflows/release.yml/badge.svg
 [build-url]: https://github.com/jimdo/package-adoption/actions/workflows/release.yml
 [downloads-img]: https://img.shields.io/npm/dt/package-adoption

@@ -6,6 +6,9 @@
   "files": [
     "lib/**/*"
   ],
+  "bin": {
+    "package-adoption": "./lib/bin/cli.js"
+  },
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf ./lib/",
@@ -48,7 +51,8 @@
     "@octokit/plugin-retry": "^3.0.9",
     "@octokit/plugin-throttling": "^4.3.0",
     "@octokit/rest": "^19.0.4",
-    "type-fest": "^2.19.0"
+    "type-fest": "^2.19.0",
+    "yargs": "^17.5.1"
   },
   "devDependencies": {
     "@ryansonshine/commitizen": "^4.2.8",
