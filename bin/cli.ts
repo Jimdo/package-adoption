@@ -12,12 +12,12 @@ const argv = yargs(process.argv.slice(2)).options({
   output: { type: 'string' },
 }).argv;
 
-type Config = {
+interface Config {
   ORG: string;
   PKG_NAME: string;
   GH_AUTHTOKEN: string;
   DAYS_UNTIL_STALE: number;
-};
+}
 
 const validateConfig = (config: Config) => {
   const errors: string[] = [];
@@ -74,10 +74,10 @@ const validateConfig = (config: Config) => {
   } else {
     console.error('Config errors:');
 
-    errors.forEach(error => {
+    errors.forEach((error) => {
       console.error(`- ${error}`);
     });
   }
-})().catch(err => {
+})().catch((err) => {
   console.error(err);
 });

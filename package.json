@@ -56,6 +56,7 @@
     "yargs": "^17.5.1"
   },
   "devDependencies": {
+    "@octokit/types": "^7.5.0",
     "@ryansonshine/commitizen": "^4.2.8",
     "@ryansonshine/cz-conventional-changelog": "^3.3.4",
     "@types/jest": "^27.5.2",
