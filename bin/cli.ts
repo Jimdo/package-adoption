@@ -57,12 +57,12 @@ const validateConfig = (config: Config) => {
 
   const errors = validateConfig(config);
   if (errors.length === 0) {
-    const repositories = await getFilteredReposWithPackageForOrg(
-      ORG,
-      DAYS_UNTIL_STALE,
-      GH_AUTHTOKEN,
-      PKG_NAME
-    );
+    const repositories = await getFilteredReposWithPackageForOrg({
+      org: ORG,
+      daysUntilStale: DAYS_UNTIL_STALE,
+      ghAuthToken: GH_AUTHTOKEN,
+      pkgName: PKG_NAME,
+    });
 
     if (argv.output) {
       const outputPath = path.resolve(cwd(), argv.output);

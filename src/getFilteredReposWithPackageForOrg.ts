@@ -36,12 +36,17 @@ type ErrorResponse = {
   request: ErrorRetryRequest;
 };
 
+type InputParameters = {
+  org: string;
+  daysUntilStale: number;
+  ghAuthToken: string;
+  pkgName: string;
+};
+
 export const getFilteredReposWithPackageForOrg = async (
-  org: string,
-  daysUntilStale: number,
-  ghAuthToken: string,
-  pkgName: string
+  config: InputParameters
 ): Promise<RelevantRepo[] | undefined> => {
+  const { org, daysUntilStale, ghAuthToken, pkgName } = config;
   const OctokitWithRetry = Octokit.plugin(retry, throttling);
   const octokit = new OctokitWithRetry({
     auth: ghAuthToken,
