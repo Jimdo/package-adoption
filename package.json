@@ -29,7 +29,8 @@
     "name": "Stefania Mellai"
   },
   "engines": {
-    "node": ">=12.0"
+    "node": ">=16.14.0",
+    "npm": ">=8.5.3"
   },
   "keywords": [
     "library",
@@ -127,5 +128,9 @@
       "@semantic-release/npm",
       "@semantic-release/github"
     ]
+  },
+  "volta": {
+    "node": "16.17.0",
+    "npm": "8.18.0"
   }
 }
