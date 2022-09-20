@@ -14,7 +14,7 @@ Archived repositories are filtered out.
 
 > :warning: GitHub API are rate limited, and search API in particular has the additional [secondary rate limit](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#secondary-rate-limits). _package-adoption_ implements the [best practices guidelines](https://docs.github.com/en/rest/guides/best-practices-for-integrators#dealing-with-secondary-rate-limits) to deal with it, but you should know that limitations could happen in any case.
 
-> :warning: GitHub search is not 100% reliable and sometimes returns deleted / outdated files or multiple versions of the same file. The library version in the output could be inaccurate for this reason.
+> :warning: GitHub search API is not 100% reliable and sometimes returns deleted / outdated files or multiple versions of the same file. The library version in the output could be inaccurate for this reason.
 
 ## Install
 
@@ -63,16 +63,22 @@ npm install -g package-adoption
 package-adoption --config /path/to/config.js --output /path/to/output.json
 ```
 
-If output option omitted, `package-adoption` ouputs to stdout.
+If output file path omitted, `package-adoption` ouputs to stdout.
 When config option omitted, default for config file will be local `config.js`. The file must export an object like this:
 
 ```ts
 module.exports = {
   ORG: 'myOrg',
-  DAYS_UNTIL_STALE: 90,
+  DAYS_UNTIL_STALE: 90, // If omitted, 360 will be used as default
   GH_AUTHTOKEN: 'my-GH-auth-token',
   PKG_NAME: 'myPkg',
 };
+```
+
+### With inline arguments
+
+```bash
+package-adoption --org=myOrg --token=my-GH-auth-token --pkg=myPkg --output /path/to/output.json
 ```
 
 [build-img]: https://github.com/jimdo/package-adoption/actions/workflows/release.yml/badge.svg

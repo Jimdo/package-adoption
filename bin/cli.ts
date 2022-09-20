@@ -6,44 +6,36 @@ import { cwd } from 'process';
 import fs from 'fs';
 
 import { getFilteredReposWithPackageForOrg } from '../src/getFilteredReposWithPackageForOrg';
+import { Config } from '../src/types';
 
 const argv = yargs(process.argv.slice(2)).options({
   config: { type: 'string', default: 'config.js' },
   output: { type: 'string' },
+  'days-until-stale': { type: 'number', default: 360 },
+  pkg: { type: 'string' },
+  token: { type: 'string' },
+  org: { type: 'string' },
 }).argv;
-
-interface Config {
-  ORG: string;
-  PKG_NAME: string;
-  GH_AUTHTOKEN: string;
-  DAYS_UNTIL_STALE: number;
-}
 
 const validateConfig = (config: Config) => {
   const errors: string[] = [];
 
-  if (config.ORG === undefined) {
-    errors.push('ORG is missing in the config file');
+  if (config.ORG === undefined || config.ORG === '') {
+    errors.push('ORG argument is missing');
   } else if (typeof config.ORG !== 'string') {
     errors.push('ORG must be a string');
   }
 
-  if (config.PKG_NAME === undefined) {
-    errors.push('PKG_NAME is missing in the config file');
+  if (config.PKG_NAME === undefined || config.PKG_NAME === '') {
+    errors.push('PKG NAME argument is missing');
   } else if (typeof config.PKG_NAME !== 'string') {
     errors.push('PKG_NAME must be a string');
   }
 
-  if (config.GH_AUTHTOKEN === undefined) {
-    errors.push('GH_AUTHTOKEN is missing in the config file');
+  if (config.GH_AUTHTOKEN === undefined || config.GH_AUTHTOKEN === '') {
+    errors.push('GH_AUTHTOKEN argument is missing');
   } else if (typeof config.GH_AUTHTOKEN !== 'string') {
     errors.push('GH_AUTHTOKEN must be a string');
-  }
-
-  if (config.DAYS_UNTIL_STALE === undefined) {
-    errors.push('DAYS_UNTIL_STALE is missing in the config file');
-  } else if (typeof config.DAYS_UNTIL_STALE !== 'number') {
-    errors.push('DAYS_UNTIL_STALE must be a string');
   }
 
   return errors;
@@ -51,7 +43,18 @@ const validateConfig = (config: Config) => {
 
 (async () => {
   const configPath = path.resolve(cwd(), argv.config);
-  const config: Config = require(configPath);
+  let config: Config;
+
+  try {
+    config = require(configPath);
+  } catch {
+    config = {
+      ORG: argv.org || '',
+      PKG_NAME: argv.pkg || '',
+      GH_AUTHTOKEN: argv.token || '',
+      DAYS_UNTIL_STALE: argv['days-until-stale'],
+    };
+  }
 
   const { ORG, PKG_NAME, GH_AUTHTOKEN, DAYS_UNTIL_STALE } = config;
 

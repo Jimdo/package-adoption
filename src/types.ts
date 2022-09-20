@@ -29,6 +29,7 @@ export interface InputParameters {
   org: string;
   /**
    * To filter out stale repositories
+   * @default 365
    */
   daysUntilStale: number;
   /**
@@ -39,4 +40,11 @@ export interface InputParameters {
    * The name of the package we want to search
    */
   pkgName: string;
+}
+
+export interface Config {
+  ORG: string;
+  PKG_NAME: string;
+  GH_AUTHTOKEN: string;
+  DAYS_UNTIL_STALE: number;
 }
