@@ -1,6 +1,9 @@
 import path from 'path';
-import { GetResponseDataTypeFromEndpointMethod } from '@octokit/types';
-import { ErrorWithResponse, InputParameters, RelevantRepo } from './types';
+import {
+  Endpoints,
+  GetResponseDataTypeFromEndpointMethod,
+} from '@octokit/types';
+import { InputParameters, RelevantRepo } from './types';
 import { readPackageJson } from './readPackageJson';
 import { init, octokit } from './octokitInit';
 import { isStale } from './isRepoStale';
@@ -14,14 +17,13 @@ import { isStale } from './isRepoStale';
 export const getFilteredReposWithPackageForOrg = async (
   config: InputParameters
 ): Promise<RelevantRepo[] | undefined> => {
-  const { org, daysUntilStale, ghAuthToken, pkgName } = config;
+  const { org, daysUntilStale = 360, ghAuthToken, pkgName } = config;
 
   init(ghAuthToken);
   if (!octokit) return;
 
-  type IteratorResponseItemDataType = GetResponseDataTypeFromEndpointMethod<
-    typeof octokit.repos.get
-  >;
+  type SearchResultItemType =
+    Endpoints['GET /search/code']['response']['data']['items'][0];
 
   console.log(
     `[package-adoption]: 🔍 Scan ${org.toUpperCase()} repositories in search of ${pkgName} ...`
@@ -29,77 +31,62 @@ export const getFilteredReposWithPackageForOrg = async (
 
   const repositoriesWithPackage: RelevantRepo[] = [];
   try {
-    /* The plain listForOrg API just returns 30 items (a page), we need paginate iterator to get the whole list */
-    const allRepos = octokit.paginate.iterator<IteratorResponseItemDataType>(
-      'GET /orgs/:org/repos',
-      {
-        org,
-        type: 'all',
-      }
-    );
+    /* The plain GET search API just returns a page (30 items, maximum 100), we need paginate iterator to get the whole list */
+    const foundPackageJsonFiles =
+      octokit.paginate.iterator<SearchResultItemType>('GET /search/code', {
+        q: `"${pkgName}" in:file org:${org} filename:package.json`,
+      });
 
-    for await (const { data: repos } of allRepos) {
-      for (let i = 0; i < repos.length; i++) {
-        const repo = repos[i];
+    for await (const { data: items } of foundPackageJsonFiles) {
+      if (items.length === 0) {
+        console.log(`[package-adoption]: No results for ${pkgName}`);
+      }
+
+      for (let i = 0; i < items.length; i++) {
+        const packageJsonFile = items[i];
+        const repoName = packageJsonFile.repository.name;
+
+        const pathDirParts = packageJsonFile.path.split('/').slice(0, -1);
+        const installationPath =
+          pathDirParts?.length > 0 ? path.join(...pathDirParts) : 'root';
+
+        type RepoResponseType = GetResponseDataTypeFromEndpointMethod<
+          typeof octokit.repos.get
+        >;
+        let repo: RepoResponseType | undefined = undefined;
+
+        try {
+          ({ data: repo } = await octokit.rest.repos.get({
+            owner: org,
+            repo: repoName,
+          }));
+        } catch (error) {
+          console.error('[package-adoption]:', error);
+          continue;
+        }
 
         if (
+          repo &&
+          // The search matches package-lock too
+          packageJsonFile.name === 'package.json' &&
+          // sometimes GitHub search returns multiple versions of the same file
+          !repositoriesWithPackage.find(
+            (relevantRepo) =>
+              relevantRepo.name === repoName &&
+              relevantRepo.installationPath === installationPath
+          ) &&
           repo.archived === false &&
-          (repo.language === 'TypeScript' || repo.language === 'JavaScript') &&
           !isStale(repo.pushed_at, daysUntilStale)
         ) {
-          try {
-            const packageJsonResponse = await octokit.search.code({
-              q: `repo:${org}/${repo.name}+filename:package.json`,
-            });
-            const foundFiles = packageJsonResponse.data.items;
-
-            for (let i = 0; i < foundFiles.length; i++) {
-              const packageJsonFile = foundFiles[i];
-
-              const pathDirParts = packageJsonFile.path.split('/').slice(0, -1);
-
-              const installationPath =
-                pathDirParts?.length > 0 ? path.join(...pathDirParts) : 'root';
-
-              if (
-                // The search matches package-lock too
-                packageJsonFile.name === 'package.json' &&
-                // sometimes GitHub search returns multiple versions of the same file
-                !repositoriesWithPackage.find(
-                  (relevantRepo) =>
-                    relevantRepo.name === repo.name &&
-                    relevantRepo.installationPath === installationPath
-                )
-              ) {
-                const packageJsonData = await readPackageJson({
-                  org,
-                  repoName: repo.name,
-                  pkgName,
-                  packageJsonPath: packageJsonFile.path,
-                  installationPath,
-                });
-                if (packageJsonData) {
-                  repositoriesWithPackage.push(packageJsonData);
-                }
-              }
-            }
-          } catch (error) {
-            const typeSafeError = error as ErrorWithResponse;
-
-            if (typeSafeError.response === null) {
-              console.error(error);
-            } else if (typeSafeError.response.status === 404) {
-              console.error(
-                `[package-adoption]: No package.json found.\n${typeSafeError?.response?.url}\n\n`
-              );
-            } else if (typeSafeError.response.status === 403) {
-              // API rate limit exceeded for user ID
-              console.error(
-                `[package-adoption]: ${typeSafeError?.response?.data.message}\n${typeSafeError?.response?.url}\n\n`
-              );
-            } else {
-              console.error(typeSafeError.response);
-            }
+          const packageJsonData = await readPackageJson({
+            org,
+            repoName: repoName,
+            pkgName,
+            packageJsonPath: packageJsonFile.path,
+            installationPath,
+          });
+          if (packageJsonData) {
+            repositoriesWithPackage.push(packageJsonData);
           }
         }
       }
