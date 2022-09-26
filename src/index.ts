@@ -1,2 +1,2 @@
 export { getFilteredReposWithPackageForOrg } from './getFilteredReposWithPackageForOrg';
-export { RelevantRepo, Config } from './types';
+export { RelevantRepo, InputParameters } from './types';
