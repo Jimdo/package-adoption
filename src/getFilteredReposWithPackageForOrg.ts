@@ -7,6 +7,7 @@ import { InputParameters, RelevantRepo } from './types';
 import { readPackageJson } from './readPackageJson';
 import { init, octokit } from './octokitInit';
 import { isStale } from './isRepoStale';
+import { validateConfig } from './validateConfig';
 
 /**
  * It takes an organization name and a package name, and returns a list of all the repositories in that
@@ -15,9 +16,17 @@ import { isStale } from './isRepoStale';
  * @returns An array of objects with the installation info for the library
  */
 export const getFilteredReposWithPackageForOrg = async (
-  config: InputParameters
+  config: InputParameters,
+  fromArgs = false
 ): Promise<RelevantRepo[] | undefined> => {
   const { org, daysUntilStale = 360, ghAuthToken, pkgName } = config;
+  const repositoriesWithPackage: RelevantRepo[] = [];
+
+  const errors = validateConfig(config, fromArgs);
+
+  if (errors.length) {
+    return;
+  }
 
   init(ghAuthToken);
   if (!octokit) return;
@@ -29,7 +38,6 @@ export const getFilteredReposWithPackageForOrg = async (
     `[package-adoption]: 🔍 Scan ${org.toUpperCase()} repositories in search of ${pkgName} ...`
   );
 
-  const repositoriesWithPackage: RelevantRepo[] = [];
   try {
     /* The plain GET search API just returns a page (30 items, maximum 100), we need paginate iterator to get the whole list */
     const foundPackageJsonFiles =

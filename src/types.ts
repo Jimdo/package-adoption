@@ -41,10 +41,3 @@ export interface InputParameters {
    */
   pkgName: string;
 }
-
-export interface Config {
-  ORG: string;
-  PKG_NAME: string;
-  GH_AUTHTOKEN: string;
-  DAYS_UNTIL_STALE: number;
-}

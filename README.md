@@ -9,7 +9,7 @@
 
 Find out where a ts/js package is used across a GitHub organization, version and position of the package for each repository.
 
-Usage for `pkgName` will be analyzed across `org`, excluding repositories that did not receive any commit in the last `daysUntilStale` days. A GitHub [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with scope `repo` is required, to access the `org` **private repositories** through GitHub APIs.
+Usage for `pkgName` will be analyzed across `org`, excluding repositories that did not receive any commit in the last `daysUntilStale` days. A GitHub [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with scope `repo` is required, to access the `org` **private repositories** through GitHub APIs. It can be omitted to search across public repositories.
 Archived repositories are filtered out.
 
 > :warning: GitHub API are rate limited, and search API in particular has the additional [secondary rate limit](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#secondary-rate-limits). _package-adoption_ implements the [best practices guidelines](https://docs.github.com/en/rest/guides/best-practices-for-integrators#dealing-with-secondary-rate-limits) to deal with it, but you should know that limitations could happen in any case.
@@ -68,10 +68,10 @@ When config option omitted, default for config file will be local `config.js`. T
 
 ```ts
 module.exports = {
-  ORG: 'myOrg',
-  DAYS_UNTIL_STALE: 90, // If omitted, 360 will be used as default
-  GH_AUTHTOKEN: 'my-GH-auth-token',
-  PKG_NAME: 'myPkg',
+  org: 'myOrg',
+  daysUntilStale: 90, // If omitted, 360 will be used as default
+  ghAuthToken: 'my-GH-auth-token',
+  pkgName: 'myPkg',
 };
 ```
 
