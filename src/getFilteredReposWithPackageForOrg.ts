@@ -17,7 +17,7 @@ import { validateConfig } from './validateConfig';
  */
 export const getFilteredReposWithPackageForOrg = async (
   config: InputParameters,
-  fromArgs: boolean
+  fromArgs = false
 ): Promise<RelevantRepo[] | undefined> => {
   const { org, daysUntilStale = 360, ghAuthToken, pkgName } = config;
   const repositoriesWithPackage: RelevantRepo[] = [];
