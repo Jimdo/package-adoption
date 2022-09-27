@@ -19,7 +19,7 @@ export const getFilteredReposWithPackageForOrg = async (
   config: InputParameters,
   fromArgs = false
 ): Promise<RelevantRepo[] | undefined> => {
-  const { org, daysUntilStale = 360, ghAuthToken, pkgName } = config;
+  const { org, daysUntilStale = 365, ghAuthToken, pkgName } = config;
   const repositoriesWithPackage: RelevantRepo[] = [];
 
   const errors = validateConfig(config, fromArgs);

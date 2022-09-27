@@ -11,7 +11,7 @@ import { InputParameters } from '../src/types';
 const argv = yargs(process.argv.slice(2)).options({
   config: { type: 'string', default: 'config.js' },
   output: { type: 'string' },
-  'days-until-stale': { type: 'number', default: 360 },
+  'days-until-stale': { type: 'number', default: 365 },
   pkg: { type: 'string' },
   token: { type: 'string' },
   org: { type: 'string' },

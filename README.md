@@ -70,7 +70,7 @@ When config option omitted, default for config file will be local `config.js`. T
 ```ts
 module.exports = {
   org: 'myOrg',
-  daysUntilStale: 90, // If omitted, 360 will be used as default
+  daysUntilStale: 90, // If omitted, 365 will be used as default
   ghAuthToken: 'my-GH-auth-token',
   pkgName: 'myPkg',
 };
