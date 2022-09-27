@@ -15,6 +15,7 @@ Archived repositories are filtered out.
 > :warning: GitHub API are rate limited, and search API in particular has the additional [secondary rate limit](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#secondary-rate-limits). _package-adoption_ implements the [best practices guidelines](https://docs.github.com/en/rest/guides/best-practices-for-integrators#dealing-with-secondary-rate-limits) to deal with it, but you should know that limitations could happen in any case.
 
 > :warning: GitHub search API is not 100% reliable and sometimes returns deleted / outdated files or multiple versions of the same file. The library version in the output could be inaccurate for this reason.
+> There is a [known issue](https://github.com/community/community/discussions/20633#discussioncomment-3735796) with package names with a scope containing hyphen character, e.g. `@typescript-eslint/parser`.
 
 ## Install
 
