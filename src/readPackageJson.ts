@@ -28,9 +28,15 @@ export const readPackageJson = async (
         Buffer.from(data.content, data.encoding as BufferEncoding).toString()
       );
 
-      const libVersionDep = pkg.dependencies?.[pkgName];
-      const libVersionPeer = pkg.peerDependencies?.[pkgName];
-      const libVersionDev = pkg.devDependencies?.[pkgName];
+      const libVersionDep =
+        pkg.dependencies?.[pkgName] ||
+        pkg.dependencies?.[pkgName.toLocaleLowerCase()];
+      const libVersionPeer =
+        pkg.peerDependencies?.[pkgName] ||
+        pkg.peerDependencies?.[pkgName.toLocaleLowerCase()];
+      const libVersionDev =
+        pkg.devDependencies?.[pkgName] ||
+        pkg.devDependencies?.[pkgName.toLocaleLowerCase()];
 
       const libVersion = libVersionDep || libVersionPeer || libVersionDev;
       if (libVersion) {
