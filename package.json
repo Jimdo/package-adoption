@@ -53,7 +53,7 @@
     "@octokit/plugin-throttling": "^4.3.0",
     "@octokit/rest": "^19.0.5",
     "type-fest": "^3.1.0",
-    "validate-npm-package-name": "^4.0.0",
+    "validate-npm-package-name": "^5.0.0",
     "yargs": "^17.6.0"
   },
   "devDependencies": {
