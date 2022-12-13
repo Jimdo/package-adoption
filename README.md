@@ -7,7 +7,7 @@
 [![Commitizen Friendly][commitizen-img]][commitizen-url]
 [![Semantic Release][semantic-release-img]][semantic-release-url]
 
-Find out where a ts/js package is used across a GitHub organization, version and position of the package for each repository.
+[Find out where a ts/js package is used](https://medium.com/p/caabc3a7544c) across a GitHub organization, version and position of the package for each repository.
 
 Usage for `pkgName` will be analyzed across `org`, excluding repositories that did not receive any commit in the last `daysUntilStale` days. A GitHub [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with scope `repo` is required, to access the `org` **private repositories** through GitHub APIs. It can be omitted to search across public repositories.
 Archived repositories are filtered out.
