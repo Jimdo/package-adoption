@@ -50,7 +50,7 @@
   "homepage": "https://github.com/Jimdo/package-adoption#readme",
   "dependencies": {
     "@octokit/plugin-retry": "^4.0.3",
-    "@octokit/plugin-throttling": "^5.0.1",
+    "@octokit/plugin-throttling": "^5.1.0",
     "@octokit/rest": "^19.0.7",
     "type-fest": "^3.6.0",
     "validate-npm-package-name": "^5.0.0",
