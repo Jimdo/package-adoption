@@ -54,7 +54,7 @@
     "@octokit/rest": "^19.0.7",
     "type-fest": "^3.6.0",
     "validate-npm-package-name": "^5.0.0",
-    "yargs": "^17.7.1"
+    "yargs": "^17.7.2"
   },
   "devDependencies": {
     "@octokit/types": "^9.0.0",
