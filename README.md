@@ -61,25 +61,31 @@ const result = getFilteredReposWithPackageForOrg({
 ```bash
 npx package-adoption
 
-package-adoption --config /path/to/config.js --output /path/to/output.json
+package-adoption --config /path/to/config.json --output /path/to/output.json
 ```
 
-If output file path omitted, `package-adoption` ouputs to stdout.
-When config option omitted, default for config file will be local `config.js`. The file must export an object like this:
+If output file path omitted, `package-adoption` outputs to stdout.
+When config option omitted, default for config file will be local `config.json`. The file must export an object like this:
 
-```ts
-module.exports = {
-  org: 'myOrg',
-  daysUntilStale: 90, // If omitted, 365 will be used as default
-  ghAuthToken: 'my-GH-auth-token',
-  pkgName: 'myPkg',
-};
+```json
+{
+  "org": "myOrg",
+  "daysUntilStale": 90, // If omitted, 365 will be used as default
+  "ghAuthToken": "my-GH-auth-token",
+  "pkgName": "myPkg",
+}
 ```
 
 ### With inline arguments
 
 ```bash
 package-adoption --org=myOrg --token=my-GH-auth-token --pkg=myPkg --output /path/to/output.json
+```
+
+### Run locally
+
+```bash
+npm run dev
 ```
 
 [build-img]: https://github.com/jimdo/package-adoption/actions/workflows/release.yml/badge.svg

@@ -1,7 +1,5 @@
 export const octokit = {
-  repos: {
-    getContent: jest.fn(),
-  },
+  request: jest.fn(),
 };
 
 export const init = jest.fn();

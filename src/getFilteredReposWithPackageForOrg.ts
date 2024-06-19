@@ -1,14 +1,11 @@
 import path from 'path';
-import {
-  Endpoints,
-  GetResponseDataTypeFromEndpointMethod,
-} from '@octokit/types';
+import { Endpoints } from '@octokit/types';
 import { InputParameters, RelevantRepo } from './types';
-import { readPackageJson } from './readPackageJson';
-import { init, octokit } from './octokitInit';
-import { isStale } from './isRepoStale';
-import { validateConfig } from './validateConfig';
-import { getFilteredReposWithPackageForOrgSlower } from './getFilteredReposWithPackageForOrgSlower';
+import { readPackageJson } from './readPackageJson.js';
+import { init, octokit } from './octokitInit.js';
+import { isStale } from './isRepoStale.js';
+import { validateConfig } from './validateConfig.js';
+import { getFilteredReposWithPackageForOrgSlower } from './getFilteredReposWithPackageForOrgSlower.js';
 
 /**
  * It takes an organization name and a package name, and returns a list of all the repositories in that
@@ -23,7 +20,7 @@ export const getFilteredReposWithPackageForOrg = async (
   const { org, daysUntilStale = 365, ghAuthToken, pkgName } = config;
   const repositoriesWithPackage: RelevantRepo[] = [];
 
-  const errors = validateConfig(config, fromArgs);
+  const errors = await validateConfig(config, fromArgs);
 
   if (errors.length) {
     return;
@@ -41,68 +38,65 @@ export const getFilteredReposWithPackageForOrg = async (
 
   try {
     /* The plain GET search API just returns a page (30 items, maximum 100), we need paginate iterator to get the whole list */
-    const foundPackageJsonFiles =
-      octokit.paginate.iterator<SearchResultItemType>('GET /search/code', {
+    const foundPackageJsonFiles = await octokit.paginate<SearchResultItemType>(
+      'GET /search/code',
+      {
         q: `"${pkgName}" in:file org:${org} filename:package.json`,
-      });
+      }
+    );
 
-    for await (const { data: items } of foundPackageJsonFiles) {
-      if (items.length === 0) {
-        // workaround to address github search issue https://github.com/community/community/discussions/20633#discussioncomment-3735796
-        const repositoriesWithPackage =
-          await getFilteredReposWithPackageForOrgSlower({ ...config }, octokit);
-        if (repositoriesWithPackage?.length === 0) {
-          console.log(`[package-adoption]: No results for ${pkgName}`);
-        }
-        return repositoriesWithPackage;
+    if (foundPackageJsonFiles.length === 0) {
+      // workaround to address github search issue https://github.com/community/community/discussions/20633#discussioncomment-3735796
+      const repositoriesWithPackage =
+        await getFilteredReposWithPackageForOrgSlower({ ...config }, octokit);
+      if (repositoriesWithPackage?.length === 0) {
+        console.log(`[package-adoption]: No results for ${pkgName}`);
+      }
+      return repositoriesWithPackage;
+    }
+
+    for (let i = 0; i < foundPackageJsonFiles.length; i++) {
+      const packageJsonFile = foundPackageJsonFiles[i];
+      const repoName = packageJsonFile.repository.name;
+
+      const pathDirParts = packageJsonFile.path.split('/').slice(0, -1);
+      const installationPath =
+        pathDirParts?.length > 0 ? path.join(...pathDirParts) : 'root';
+
+      let repo = undefined;
+
+      try {
+        ({ data: repo } = await octokit.request('GET /repos/{owner}/{repo}', {
+          owner: org,
+          repo: repoName,
+        }));
+      } catch (error) {
+        console.error('[package-adoption]:', error);
+        continue;
       }
 
-      for (let i = 0; i < items.length; i++) {
-        const packageJsonFile = items[i];
-        const repoName = packageJsonFile.repository.name;
-
-        const pathDirParts = packageJsonFile.path.split('/').slice(0, -1);
-        const installationPath =
-          pathDirParts?.length > 0 ? path.join(...pathDirParts) : 'root';
-
-        type RepoResponseType = GetResponseDataTypeFromEndpointMethod<
-          typeof octokit.repos.get
-        >;
-        let repo: RepoResponseType | undefined = undefined;
-
-        try {
-          ({ data: repo } = await octokit.rest.repos.get({
-            owner: org,
-            repo: repoName,
-          }));
-        } catch (error) {
-          console.error('[package-adoption]:', error);
-          continue;
-        }
-
-        if (
-          repo &&
-          // The search matches package-lock too
-          packageJsonFile.name === 'package.json' &&
-          // sometimes GitHub search returns multiple versions of the same file
-          !repositoriesWithPackage.find(
-            (relevantRepo) =>
-              relevantRepo.name === repoName &&
-              relevantRepo.installationPath === installationPath
-          ) &&
-          repo.archived === false &&
-          !isStale(repo.pushed_at, daysUntilStale)
-        ) {
-          const packageJsonData = await readPackageJson({
-            org,
-            repoName: repoName,
-            pkgName,
-            packageJsonPath: packageJsonFile.path,
-            installationPath,
-          });
-          if (packageJsonData) {
-            repositoriesWithPackage.push(packageJsonData);
-          }
+      if (
+        repo &&
+        // The search matches package-lock too
+        packageJsonFile.name === 'package.json' &&
+        // sometimes GitHub search returns multiple versions of the same file
+        !repositoriesWithPackage.find(
+          (relevantRepo) =>
+            relevantRepo.name === repoName &&
+            relevantRepo.installationPath === installationPath
+        ) &&
+        repo.archived === false &&
+        !isStale(repo.pushed_at, daysUntilStale)
+      ) {
+        const packageJsonData = await readPackageJson({
+          org,
+          repoName: repoName,
+          pkgName,
+          packageJsonPath: packageJsonFile.path,
+          installationPath,
+        });
+        if (packageJsonData) {
+          repositoriesWithPackage.push(packageJsonData);
         }
       }
     }
