@@ -29,7 +29,7 @@ describe('readPackageJson', () => {
   });
 
   it('should parse package version from dependencies in package.json file', async () => {
-    (octokit?.repos.getContent as unknown as jest.Mock).mockResolvedValueOnce({
+    (octokit?.request as unknown as jest.Mock).mockResolvedValueOnce({
       data: getMockedFileResponse(contentResponseMockDeps),
     });
 
@@ -47,7 +47,7 @@ describe('readPackageJson', () => {
   });
 
   it('should parse package version from devDependencies and peerDependencies in package.json file', async () => {
-    (octokit?.repos.getContent as unknown as jest.Mock).mockResolvedValueOnce({
+    (octokit?.request as unknown as jest.Mock).mockResolvedValueOnce({
       data: getMockedFileResponse(contentResponseMockPeerAndDev),
     });
 
@@ -69,7 +69,7 @@ describe('readPackageJson', () => {
   it('should print error if file content invalid', async () => {
     const errorUrl =
       'https://api.github.com/repos/myOrg/repoX/contents/packages%2Fsubmodule%2Fpackage.json';
-    (octokit?.repos.getContent as unknown as jest.Mock).mockRejectedValueOnce({
+    (octokit?.request as unknown as jest.Mock).mockRejectedValueOnce({
       response: {
         url: errorUrl,
       },

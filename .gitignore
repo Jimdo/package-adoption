@@ -45,4 +45,4 @@ jspm_packages/
 lib/
 
 # Config file
-config.js
+config.json

@@ -6,8 +6,11 @@
  * @param {number} daysUntilStale - The number of days until a repository is considered stale.
  * @returns A boolean value.
  */
-export const isStale = (pushedAt: string, daysUntilStale: number): boolean => {
-  if (pushedAt === null) {
+export const isStale = (
+  pushedAt: string | null | undefined,
+  daysUntilStale: number
+): boolean => {
+  if (pushedAt === null || pushedAt === undefined) {
     return false;
   }
 

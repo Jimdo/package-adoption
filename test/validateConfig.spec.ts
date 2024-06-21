@@ -13,8 +13,8 @@ describe('isValid', () => {
     console.error = error; // restore original console.error after all tests
   });
 
-  it('should return empty array if no error found', () => {
-    const errors = validateConfig(
+  it('should return empty array if no error found', async () => {
+    const errors = await validateConfig(
       {
         org: 'orgName',
         pkgName: 'pkgName',
@@ -27,8 +27,8 @@ describe('isValid', () => {
     expect(errors).toEqual([]);
   });
 
-  it('should return empty array and log something if empty ghAuthToken', () => {
-    const errors = validateConfig(
+  it('should return empty array and log something if empty ghAuthToken', async () => {
+    const errors = await validateConfig(
       {
         org: 'orgName',
         pkgName: 'pkgName',
@@ -44,8 +44,8 @@ describe('isValid', () => {
     );
   });
 
-  it('should return one error if org missing', () => {
-    const errors = validateConfig(
+  it('should return one error if org missing', async () => {
+    const errors = await validateConfig(
       {
         org: '',
         pkgName: 'pkgName',
@@ -58,8 +58,8 @@ describe('isValid', () => {
     expect(errors).toEqual(['org argument is missing']);
   });
 
-  it('should return errors if org and pkgName missing', () => {
-    const errors = validateConfig(
+  it('should return errors if org and pkgName missing', async () => {
+    const errors = await validateConfig(
       {
         org: '',
         pkgName: '',
@@ -75,8 +75,8 @@ describe('isValid', () => {
     ]);
   });
 
-  it('should return errors on argument type mismatch', () => {
-    const errors = validateConfig(
+  it('should return errors on argument type mismatch', async () => {
+    const errors = await validateConfig(
       {
         // @ts-ignore
         org: 12,
@@ -94,8 +94,8 @@ describe('isValid', () => {
     ]);
   });
 
-  it('should report invalid package name', () => {
-    const errors = validateConfig(
+  it('should report invalid package name', async () => {
+    const errors = await validateConfig(
       {
         org: 'myOrg',
         pkgName: 'invalid package name',
@@ -105,11 +105,13 @@ describe('isValid', () => {
       false
     );
 
-    expect(errors).toEqual(['pkgName argument is invalid as npm package name']);
+    expect(errors).toEqual([
+      'pkgName argument is invalid as npm package name. Errors: name can only contain URL-friendly characters',
+    ]);
   });
 
-  it('should report invalid package name with correct param name for CLI argument', () => {
-    const errors = validateConfig(
+  it('should report invalid package name with correct param name for CLI argument', async () => {
+    const errors = await validateConfig(
       {
         org: 'myOrg',
         pkgName: 'invalid package name',
@@ -119,11 +121,13 @@ describe('isValid', () => {
       true
     );
 
-    expect(errors).toEqual(['pkg argument is invalid as npm package name']);
+    expect(errors).toEqual([
+      'pkg argument is invalid as npm package name. Errors: name can only contain URL-friendly characters',
+    ]);
   });
 
-  it('should report invalid type for daysUntilStale', () => {
-    const errors = validateConfig(
+  it('should report invalid type for daysUntilStale', async () => {
+    const errors = await validateConfig(
       {
         org: 'myOrg',
         pkgName: 'myPkg',
@@ -137,8 +141,8 @@ describe('isValid', () => {
     expect(errors).toEqual(['daysUntilStale must be a number']);
   });
 
-  it('should report invalid type for daysUntilStale with correct param name', () => {
-    const errors = validateConfig(
+  it('should report invalid type for daysUntilStale with correct param name', async () => {
+    const errors = await validateConfig(
       {
         org: 'myOrg',
         pkgName: 'myPkg',

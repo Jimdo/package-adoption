@@ -1,9 +1,9 @@
 import path from 'path';
-import { GetResponseDataTypeFromEndpointMethod } from '@octokit/types';
+import { Endpoints } from '@octokit/types';
 import { ErrorWithResponse, InputParameters, RelevantRepo } from './types';
-import { readPackageJson } from './readPackageJson';
-import { isStale } from './isRepoStale';
-import { Octokit } from '@octokit/rest';
+import { readPackageJson } from './readPackageJson.js';
+import { isStale } from './isRepoStale.js';
+import { OctokitWithPlugins } from './octokitInit.js';
 
 /**
  * It takes an organization name and a package name, and returns a list of all the repositories in that
@@ -13,18 +13,16 @@ import { Octokit } from '@octokit/rest';
  */
 export const getFilteredReposWithPackageForOrgSlower = async (
   config: InputParameters,
-  octokit: Octokit
+  octokit: OctokitWithPlugins
 ): Promise<RelevantRepo[] | undefined> => {
   const { org, daysUntilStale = 365, pkgName } = config;
   const repositoriesWithPackage: RelevantRepo[] = [];
 
-  type IteratorResponseItemDataType = GetResponseDataTypeFromEndpointMethod<
-    typeof octokit.repos.get
-  >;
+  type ResponseItemDataType = Endpoints['GET /orgs/{org}/repos']['response'];
 
   try {
     /* The plain listForOrg API just returns 30 items (a page), we need paginate iterator to get the whole list */
-    const allRepos = octokit.paginate.iterator<IteratorResponseItemDataType>(
+    const allRepos = await octokit.paginate<ResponseItemDataType>(
       'GET /orgs/:org/repos',
       {
         org,
@@ -32,7 +30,7 @@ export const getFilteredReposWithPackageForOrgSlower = async (
       }
     );
 
-    for await (const { data: repos } of allRepos) {
+    for (const { data: repos } of allRepos) {
       for (let i = 0; i < repos.length; i++) {
         const repo = repos[i];
 
@@ -42,9 +40,12 @@ export const getFilteredReposWithPackageForOrgSlower = async (
           !isStale(repo.pushed_at, daysUntilStale)
         ) {
           try {
-            const packageJsonResponse = await octokit.search.code({
-              q: `repo:${org}/${repo.name}+filename:package.json`,
-            });
+            const packageJsonResponse = await octokit.request(
+              'GET /search/code',
+              {
+                q: `repo:${org}/${repo.name}+filename:package.json`,
+              }
+            );
             const foundFiles = packageJsonResponse.data.items;
 
             for (let i = 0; i < foundFiles.length; i++) {

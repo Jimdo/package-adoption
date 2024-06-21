@@ -1,5 +1,5 @@
 import { PackageJson } from 'type-fest';
-import { octokit } from './octokitInit';
+import { octokit } from './octokitInit.js';
 import { ErrorWithResponse, RelevantRepo } from './types';
 
 export interface ReadPackageJsonParams {
@@ -17,11 +17,14 @@ export const readPackageJson = async (
   if (!octokit) return null;
 
   try {
-    const { data } = await octokit.repos.getContent({
-      owner: org,
-      repo: repoName,
-      path: packageJsonPath,
-    });
+    const { data } = await octokit.request(
+      'GET /repos/{owner}/{repo}/contents/{path}',
+      {
+        owner: org,
+        repo: repoName,
+        path: packageJsonPath,
+      }
+    );
 
     if ('content' in data) {
       const pkg: PackageJson = JSON.parse(

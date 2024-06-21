@@ -31,7 +31,7 @@ export interface InputParameters {
    * To filter out stale repositories
    * @default 365
    */
-  daysUntilStale: number;
+  daysUntilStale?: number;
   /**
    * GitHub personal access token to access private repositories
    */
