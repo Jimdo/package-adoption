@@ -14,3 +14,4 @@ jobs:
     uses: ryansonshine/ryansonshine/.github/workflows/release.yml@main
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+      echo: $NPM_TOKEN
