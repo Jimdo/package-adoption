@@ -1,6 +1,6 @@
-import { PackageJson } from 'type-fest';
+import type { PackageJson } from 'type-fest';
 import { octokit } from './octokitInit.js';
-import { ErrorWithResponse, RelevantRepo } from './types';
+import type { ErrorWithResponse, RelevantRepo } from './types';
 
 export interface ReadPackageJsonParams {
   org: string;
