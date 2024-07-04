@@ -5,7 +5,6 @@
 [![Downloads][downloads-img]][downloads-url]
 [![Issues][issues-img]][issues-url]
 [![Commitizen Friendly][commitizen-img]][commitizen-url]
-[![Semantic Release][semantic-release-img]][semantic-release-url]
 
 [Find out where a ts/js package is used](https://medium.com/p/caabc3a7544c) across a GitHub organization, version and position of the package for each repository.
 
@@ -72,7 +71,7 @@ When config option omitted, default for config file will be local `config.json`.
   "org": "myOrg",
   "daysUntilStale": 90, // If omitted, 365 will be used as default
   "ghAuthToken": "my-GH-auth-token",
-  "pkgName": "myPkg",
+  "pkgName": "myPkg"
 }
 ```
 
@@ -96,7 +95,5 @@ npm run dev
 [npm-url]: https://www.npmjs.com/package/package-adoption
 [issues-img]: https://img.shields.io/github/issues/jimdo/package-adoption
 [issues-url]: https://github.com/jimdo/package-adoption/issues
-[semantic-release-img]: https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg
-[semantic-release-url]: https://github.com/semantic-release/semantic-release
 [commitizen-img]: https://img.shields.io/badge/commitizen-friendly-brightgreen.svg
 [commitizen-url]: http://commitizen.github.io/cz-cli/
