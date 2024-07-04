@@ -1,7 +1,11 @@
-import childProcess, { execSync } from 'child_process';
+import fs from 'fs';
+import childProcess from 'child_process';
+import { PackageJson } from 'type-fest';
 
-const branchName = execSync('git rev-parse --abbrev-ref HEAD')
-  .toString('utf-8')
-  .trim();
+// TODO - analyze commits and use commit messages to annotate tag?
 
-childProcess.execSync(`git push -u origin ${branchName} --tags `);
+const packageJson: PackageJson = JSON.parse(
+  fs.readFileSync('package.json').toString()
+);
+
+childProcess.execSync(`git push origin v${packageJson.version}`);
