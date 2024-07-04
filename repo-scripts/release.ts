@@ -57,21 +57,6 @@ try {
           },
         ],
         '@semantic-release/npm',
-        [
-          '@semantic-release/github',
-          {
-            successComment:
-              ":tada: This ${issue.pull_request ? 'pull request' : 'issue'} is included in version ${nextRelease.version}",
-          },
-        ],
-        [
-          '@semantic-release/git',
-          {
-            assets: ['package.json', 'package-lock.json'],
-            message:
-              'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
-          },
-        ],
       ],
     }
     /* {
