@@ -19,14 +19,60 @@ try {
       // Plugin options
       githubUrl: 'https://my-ghe.com',
       githubApiPathPrefix: '/api-prefix', */
-      analyzeCommits: '@semantic-release/commit-analyzer',
-      verifyConditions: '@semantic-release/npm',
-      prepare: '@semantic-release/npm',
-      generateNotes: '@semantic-release/release-notes-generator',
-      publish: '@semantic-release/npm',
-      success: false,
-      fail: false,
-      npmPublish: true,
+      plugins: [
+        [
+          '@semantic-release/commit-analyzer',
+          {
+            preset: 'conventionalcommits',
+            releaseRules: [
+              {
+                type: 'build',
+                scope: 'deps',
+                release: 'patch',
+              },
+            ],
+          },
+        ],
+        [
+          '@semantic-release/release-notes-generator',
+          {
+            preset: 'conventionalcommits',
+            presetConfig: {
+              types: [
+                {
+                  type: 'feat',
+                  section: 'Features',
+                },
+                {
+                  type: 'fix',
+                  section: 'Bug Fixes',
+                },
+                {
+                  type: 'build',
+                  section: 'Dependencies and Other Build Updates',
+                  hidden: false,
+                },
+              ],
+            },
+          },
+        ],
+        '@semantic-release/npm',
+        [
+          '@semantic-release/github',
+          {
+            successComment:
+              ":tada: This ${issue.pull_request ? 'pull request' : 'issue'} is included in version ${nextRelease.version}",
+          },
+        ],
+        [
+          '@semantic-release/git',
+          {
+            assets: ['package.json', 'package-lock.json'],
+            message:
+              'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
+          },
+        ],
+      ],
     }
     /* {
       // Run semantic-release from `/path/to/git/repo/root` without having to change local process `cwd` with `process.chdir()`
