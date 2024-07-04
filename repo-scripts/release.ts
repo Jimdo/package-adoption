@@ -19,6 +19,7 @@ try {
       // Plugin options
       githubUrl: 'https://my-ghe.com',
       githubApiPathPrefix: '/api-prefix', */
+      publish: false,
       plugins: [
         [
           '@semantic-release/commit-analyzer',
@@ -60,10 +61,11 @@ try {
         [
           '@semantic-release/github',
           {
-            successComment:
-              ":tada: This ${issue.pull_request ? 'pull request' : 'issue'} is included in version ${nextRelease.version}",
+            publish: false,
+            // successComment:
+            //   ":tada: This ${issue.pull_request ? 'pull request' : 'issue'} is included in version ${nextRelease.version}",
           },
-        ],
+        ] /*,
         [
           '@semantic-release/git',
           {
@@ -71,7 +73,7 @@ try {
             message:
               'chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}',
           },
-        ],
+        ], */,
       ],
     }
     /* {
