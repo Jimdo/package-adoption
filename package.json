@@ -8,7 +8,7 @@
     "lib/**/*"
   ],
   "bin": {
-    "package-adoption": "./lib/bin/cli.js"
+    "package-adoption": "lib/bin/cli.js"
   },
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
@@ -72,7 +72,6 @@
     "jest": "^29.7.0",
     "lint-staged": "^15.2.7",
     "prettier": "^3.3.2",
-    "semantic-release": "^24.0.0",
     "ts-jest": "^29.1.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.5.3"
