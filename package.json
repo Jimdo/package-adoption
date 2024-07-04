@@ -18,7 +18,7 @@
     "prettier": "prettier --write src/",
     "prepare": "husky",
     "semantic-release": "node --loader ts-node/esm ./repo-scripts/npm-release.ts",
-    "postversion": "git push -u && git push --tags",
+    "postversion": "git push --follow-tags",
     "test:watch": "jest --watch",
     "test": "jest --coverage",
     "typecheck": "tsc --noEmit",
