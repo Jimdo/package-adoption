@@ -1,6 +1,6 @@
 {
   "name": "package-adoption",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Find out where a js package is used across a GitHub organization, output its version and position in each repository",
   "main": "./lib/src/index.js",
   "type": "module",

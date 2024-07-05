@@ -5,7 +5,6 @@ import { readPackageJson } from './readPackageJson.js';
 import { init, octokit } from './octokitInit.js';
 import { isStale } from './isRepoStale.js';
 import { validateConfig } from './validateConfig.js';
-import { getFilteredReposWithPackageForOrgSlower } from './getFilteredReposWithPackageForOrgSlower.js';
 
 /**
  * It takes an organization name and a package name, and returns a list of all the repositories in that
@@ -46,12 +45,7 @@ export const getFilteredReposWithPackageForOrg = async (
     );
 
     if (foundPackageJsonFiles.length === 0) {
-      // workaround to address github search issue https://github.com/community/community/discussions/20633#discussioncomment-3735796
-      const repositoriesWithPackage =
-        await getFilteredReposWithPackageForOrgSlower({ ...config }, octokit);
-      if (repositoriesWithPackage?.length === 0) {
-        console.log(`[package-adoption]: No results for ${pkgName}`);
-      }
+      console.log(`[package-adoption]: No results for ${pkgName}`);
       return repositoriesWithPackage;
     }
 
