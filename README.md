@@ -11,9 +11,11 @@
 Usage for `pkgName` will be analyzed across `org`, excluding repositories that did not receive any commit in the last `daysUntilStale` days. A GitHub [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) with scope `repo` is required, to access the `org` **private repositories** through GitHub APIs. It can be omitted to search across public repositories.
 Archived repositories are filtered out.
 
-> :warning: GitHub API are rate limited, and search API in particular has the additional [secondary rate limit](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#secondary-rate-limits). _package-adoption_ implements the [best practices guidelines](https://docs.github.com/en/rest/guides/best-practices-for-integrators#dealing-with-secondary-rate-limits) to deal with it, but you should know that limitations could happen in any case.
+> [!WARNING]
+> GitHub API are rate limited, and search API in particular has the additional [secondary rate limit](https://docs.github.com/en/rest/overview/resources-in-the-rest-api#secondary-rate-limits). _package-adoption_ implements the [best practices guidelines](https://docs.github.com/en/rest/guides/best-practices-for-integrators#dealing-with-secondary-rate-limits) to deal with it, but you should know that limitations could happen in any case.
 
-> :warning: GitHub search API are not 100% reliable and sometimes return deleted / outdated files or multiple versions of the same file. The library version in the output could be inaccurate for this reason.
+> [!CAUTION]
+> GitHub search API are not 100% reliable and sometimes return deleted / outdated files or multiple versions of the same file. The library version in the output could be inaccurate for this reason.
 
 ## Install
 
