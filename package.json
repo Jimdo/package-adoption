@@ -53,7 +53,7 @@
     "@octokit/plugin-paginate-rest": "^11.3.6",
     "@octokit/plugin-retry": "^7.1.2",
     "@octokit/plugin-throttling": "^9.3.2",
-    "type-fest": "^4.28.1",
+    "type-fest": "^4.29.0",
     "validate-npm-package-name": "^6.0.0",
     "yargs": "^17.7.2"
   },
