@@ -1,9 +1,9 @@
 import path from 'path';
 import { Endpoints } from '@octokit/types';
-import { InputParameters, RelevantRepo } from './types';
-import { readPackageJson } from './readPackageJson.js';
-import { init, octokit } from './octokitInit.js';
 import { isStale } from './isRepoStale.js';
+import { init, octokit } from './octokitInit.js';
+import { readPackageJson } from './readPackageJson.js';
+import { InputParameters, RelevantRepo } from './types';
 import { validateConfig } from './validateConfig.js';
 
 /**

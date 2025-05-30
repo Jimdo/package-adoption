@@ -1,7 +1,7 @@
 import { Octokit } from '@octokit/core';
+import { PaginateInterface, paginateRest } from '@octokit/plugin-paginate-rest';
 import { retry } from '@octokit/plugin-retry';
 import { throttling } from '@octokit/plugin-throttling';
-import { PaginateInterface, paginateRest } from '@octokit/plugin-paginate-rest';
 import { EndpointDefaults } from '@octokit/types';
 
 export type OctokitWithPlugins = Octokit & { paginate: PaginateInterface };
@@ -33,7 +33,7 @@ export const init = (githubToken: string): void => {
         }
       },
       onSecondaryRateLimit: (
-        retryAfter: number,
+        _retryAfter: number,
         options: Required<EndpointDefaults>,
         octokit: Octokit
       ) => {
@@ -43,8 +43,6 @@ export const init = (githubToken: string): void => {
         );
       },
     },
-    retry: {
-      doNotRetry: ['429', '404'],
-    },
+    retry: { doNotRetry: ['429', '404'] },
   });
 };
