@@ -58,7 +58,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
-    "@octokit/types": "^14.1.0",
+    "@octokit/types": "^15.0.0",
     "@ryansonshine/commitizen": "^4.2.8",
     "@ryansonshine/cz-conventional-changelog": "^3.3.4",
     "@types/jest": "^29.5.14",
