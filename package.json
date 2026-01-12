@@ -53,7 +53,7 @@
     "@octokit/plugin-retry": "^7.2.1",
     "@octokit/plugin-throttling": "^10.0.0",
     "type-fest": "^5.3.1",
-    "validate-npm-package-name": "^7.0.0",
+    "validate-npm-package-name": "^7.0.2",
     "yargs": "^18.0.0"
   },
   "devDependencies": {
