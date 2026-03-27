@@ -43,6 +43,6 @@ export const init = (githubToken: string): void => {
         );
       },
     },
-    retry: { doNotRetry: ['429', '404'] },
+    retry: { doNotRetry: [429, 404] },
   });
 };
