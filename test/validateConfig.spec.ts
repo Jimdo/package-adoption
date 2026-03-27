@@ -1,3 +1,4 @@
+import { afterAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { validateConfig } from '../src/validateConfig';
 
 describe('isValid', () => {
@@ -5,8 +6,8 @@ describe('isValid', () => {
   const error = console.error; // save original console.error function
   beforeEach(() => {
     // create 2 new mock functions for each test
-    console.log = jest.fn();
-    console.error = jest.fn();
+    console.log = vi.fn();
+    console.error = vi.fn();
   });
   afterAll(() => {
     console.log = log; // restore original console.log after all tests

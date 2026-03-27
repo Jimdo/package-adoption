@@ -1,10 +1,21 @@
+import {
+  afterAll,
+  beforeEach,
+  describe,
+  expect,
+  it,
+  type Mock,
+  vi,
+} from 'vitest';
 import { readPackageJson } from '../src/readPackageJson';
 import {
   contentResponseMockDeps,
   contentResponseMockPeerAndDev,
   getMockedFileResponse,
 } from './fixtures';
-jest.mock('../src/octokitInit');
+
+vi.mock('../src/octokitInit');
+
 import { octokit } from '../src/octokitInit';
 
 const input = {
@@ -20,8 +31,8 @@ describe('readPackageJson', () => {
   const error = console.error; // save original console.error function
   beforeEach(() => {
     // create 2 new mock functions for each test
-    console.log = jest.fn();
-    console.error = jest.fn();
+    console.log = vi.fn();
+    console.error = vi.fn();
   });
   afterAll(() => {
     console.log = log; // restore original console.log after all tests
@@ -29,7 +40,7 @@ describe('readPackageJson', () => {
   });
 
   it('should parse package version from dependencies in package.json file', async () => {
-    (octokit?.request as unknown as jest.Mock).mockResolvedValueOnce({
+    (octokit?.request as unknown as Mock).mockResolvedValueOnce({
       data: getMockedFileResponse(contentResponseMockDeps),
     });
 
@@ -47,7 +58,7 @@ describe('readPackageJson', () => {
   });
 
   it('should parse package version from devDependencies and peerDependencies in package.json file', async () => {
-    (octokit?.request as unknown as jest.Mock).mockResolvedValueOnce({
+    (octokit?.request as unknown as Mock).mockResolvedValueOnce({
       data: getMockedFileResponse(contentResponseMockPeerAndDev),
     });
 
@@ -69,7 +80,7 @@ describe('readPackageJson', () => {
   it('should print error if file content invalid', async () => {
     const errorUrl =
       'https://api.github.com/repos/myOrg/repoX/contents/packages%2Fsubmodule%2Fpackage.json';
-    (octokit?.request as unknown as jest.Mock).mockRejectedValueOnce({
+    (octokit?.request as unknown as Mock).mockRejectedValueOnce({
       response: {
         url: errorUrl,
       },

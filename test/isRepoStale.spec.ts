@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { isStale } from '../src/isRepoStale';
 
 describe('isStale', () => {

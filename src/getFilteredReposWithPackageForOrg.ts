@@ -1,5 +1,5 @@
-import path from 'path';
 import { Endpoints } from '@octokit/types';
+import path from 'path';
 import { isStale } from './isRepoStale.js';
 import { init, octokit } from './octokitInit.js';
 import { readPackageJson } from './readPackageJson.js';

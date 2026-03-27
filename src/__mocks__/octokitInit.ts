@@ -1,5 +1,7 @@
+import { vi } from 'vitest';
+
 export const octokit = {
-  request: jest.fn(),
+  request: vi.fn(),
 };
 
-export const init = jest.fn();
+export const init = vi.fn();
