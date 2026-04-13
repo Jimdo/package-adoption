@@ -61,7 +61,7 @@
     "@octokit/types": "^16.0.0",
     "@ryansonshine/commitizen": "^4.2.8",
     "@ryansonshine/cz-conventional-changelog": "^3.3.4",
-    "@types/node": "^24.10.2",
+    "@types/node": "^25.6.0",
     "@types/validate-npm-package-name": "^4.0.2",
     "@types/yargs": "^17.0.35",
     "@vitest/coverage-v8": "^4.1.4",
