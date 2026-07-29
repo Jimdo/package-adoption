@@ -79,6 +79,9 @@
   "lint-staged": {
     "*.ts": "biome check --write"
   },
+  "overrides": {
+    "brace-expansion": "5.0.8"
+  },
   "volta": {
     "node": "24.14.0"
   },
