@@ -54,7 +54,7 @@
     "@octokit/plugin-throttling": "^11.0.3",
     "type-fest": "^5.8.0",
     "validate-npm-package-name": "^8.0.0",
-    "yargs": "^18.0.0"
+    "yargs": "^18.1.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.5.5",
