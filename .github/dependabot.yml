@@ -14,6 +14,12 @@ updates:
       include: 'scope'
     cooldown:
       default-days: 3
+    ignore:
+      # TypeScript 7 is the native (Go) rewrite; its compiler API is
+      # incompatible with ts-node@10, which the release script relies on.
+      # Hold at 6.x until the tooling moves off ts-node.
+      - dependency-name: 'typescript'
+        update-types: ['version-update:semver-major']
     groups:
       vitest:
         patterns:
