@@ -25,6 +25,13 @@ updates:
         patterns:
           - 'vitest'
           - '@vitest/*'
+      octokit:
+        patterns:
+          - 'octokit'
+          - '@octokit/*'
+      commitizen:
+        patterns:
+          - '@ryansonshine/*'
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
