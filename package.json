@@ -49,7 +49,7 @@
   "homepage": "https://github.com/Jimdo/package-adoption#readme",
   "dependencies": {
     "@octokit/core": "^7.0.8",
-    "@octokit/plugin-paginate-rest": "^14.0.0",
+    "@octokit/plugin-paginate-rest": "^15.0.0",
     "@octokit/plugin-retry": "^8.1.1",
     "@octokit/plugin-throttling": "^11.0.5",
     "type-fest": "^5.9.0",
