@@ -65,16 +65,24 @@ package-adoption --config /path/to/config.json --output /path/to/output.json
 ```
 
 If output file path omitted, `package-adoption` outputs to stdout.
-When config option omitted, default for config file will be local `config.json`. The file must export an object like this:
+When config option omitted, the default config file is a local `config.json`. Copy the committed template to create it:
+
+```bash
+cp config.example config.json
+```
+
+`config.json` is git-ignored, so your token stays out of the repository. Fill in `org`, `ghAuthToken`, and `pkgName`:
 
 ```json
 {
   "org": "myOrg",
-  "daysUntilStale": 90, // If omitted, 365 will be used as default
+  "daysUntilStale": 90,
   "ghAuthToken": "my-GH-auth-token",
   "pkgName": "myPkg"
 }
 ```
+
+Omit `daysUntilStale` to use the default of 365.
 
 ### With inline arguments
 
@@ -84,9 +92,14 @@ package-adoption --org=myOrg --token=my-GH-auth-token --pkg=myPkg --output /path
 
 ### Run locally
 
+`npm run dev` reads `config.json` from the repository root, so create it first:
+
 ```bash
+cp config.example config.json
 npm run dev
 ```
+
+The CLI falls back to the `--org`, `--token` and `--pkg` arguments when the file is missing. Supply neither and it exits with `ENOENT: no such file or directory, open '.../config.json'`.
 
 [build-img]: https://github.com/jimdo/package-adoption/actions/workflows/release.yml/badge.svg
 [build-url]: https://github.com/jimdo/package-adoption/actions/workflows/release.yml
