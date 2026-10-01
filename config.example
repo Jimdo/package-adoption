@@ -1,0 +1,6 @@
+{
+  "org": "github_org_name",
+  "daysUntilStale": 365,
+  "ghAuthToken": "github_auth_token",
+  "pkgName": "@org/package"
+}
