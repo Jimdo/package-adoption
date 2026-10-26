@@ -7,6 +7,11 @@ updates:
       time: '05:30'
       timezone: 'Europe/Berlin'
     open-pull-requests-limit: 99
+    # Dependabot assigns these itself, server side. An Actions job cannot do it:
+    # the Jimdo org IP allow list 403s REST writes from GitHub-hosted runners.
+    assignees:
+      - 'jennifer-takagi'
+      - 'jacklaurencegaray'
     versioning-strategy: 'increase'
     commit-message:
       prefix: 'fix'
@@ -34,6 +39,9 @@ updates:
           - '@ryansonshine/*'
   - package-ecosystem: "github-actions"
     directory: "/"
+    assignees:
+      - 'jennifer-takagi'
+      - 'jacklaurencegaray'
     schedule:
       interval: "monthly"
       time: "13:00"
