@@ -1,0 +1,14 @@
+name: Probe token
+on:
+  push:
+    branches: [ktlo/dependabot-assignee-token]
+permissions:
+  issues: write
+  pull-requests: write
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: gh api "repos/${GITHUB_REPOSITORY}/issues/927/assignees" -f "assignees[]=jennifer-takagi"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,8 +1,8 @@
 name: Dependabot assignee
 
-# pull_request_target so the job runs with the repository's own GITHUB_TOKEN.
-# On a plain pull_request from Dependabot the token comes from the Dependabot
-# secret source, which the Jimdo org IP allow list rejects with a 403.
+# pull_request_target so the job runs with the repository's own GITHUB_TOKEN:
+# the Dependabot-sourced token a plain pull_request run gets is blocked by the
+# org IP allow list.
 on:
   pull_request_target:
     types: [opened, reopened]
@@ -14,7 +14,7 @@ permissions:
 jobs:
   assign:
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
     steps:
       - name: Assign the rotation
         run: |
