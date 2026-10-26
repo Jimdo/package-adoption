@@ -1,8 +1,11 @@
 name: Dependabot assignee
 
+# pull_request_target so the job runs with the repository's own GITHUB_TOKEN:
+# the Dependabot-sourced token a plain pull_request run gets is blocked by the
+# org IP allow list.
 on:
-  pull_request:
-    types: [opened]
+  pull_request_target:
+    types: [opened, reopened]
 
 permissions:
   issues: write
@@ -11,7 +14,7 @@ permissions:
 jobs:
   assign:
     runs-on: ubuntu-latest
-    if: github.actor == 'dependabot[bot]'
+    if: github.event.pull_request.user.login == 'dependabot[bot]'
     steps:
       - name: Assign the rotation
         run: |
