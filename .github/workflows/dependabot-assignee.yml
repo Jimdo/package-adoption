@@ -1,8 +1,11 @@
 name: Dependabot assignee
 
+# pull_request_target so the job runs with the repository's own GITHUB_TOKEN.
+# On a plain pull_request from Dependabot the token comes from the Dependabot
+# secret source, which the Jimdo org IP allow list rejects with a 403.
 on:
-  pull_request:
-    types: [opened]
+  pull_request_target:
+    types: [opened, reopened]
 
 permissions:
   issues: write
