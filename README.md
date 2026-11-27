@@ -101,6 +101,8 @@ npm run dev
 
 The CLI falls back to the `--org`, `--token` and `--pkg` arguments when the file is missing. Supply neither and it exits with `ENOENT: no such file or directory, open '.../config.json'`.
 
+Working on this repo: see [AGENTS.md](AGENTS.md).
+
 [build-img]: https://github.com/jimdo/package-adoption/actions/workflows/release.yml/badge.svg
 [build-url]: https://github.com/jimdo/package-adoption/actions/workflows/release.yml
 [downloads-img]: https://img.shields.io/npm/dt/package-adoption
