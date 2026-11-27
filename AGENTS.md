@@ -27,14 +27,6 @@ npm run check       # biome check --write ./src/, not run in CI
 
 CI on a PR is one job, `build` (pr.yml): `npm ci`, `npm run build`, `npm test`. Merging to `main` needs the `build` check green and one approving review (branch protection and a repo ruleset both say so). An org ruleset and the repo ruleset require signed commits. The pre-commit hook runs lint-staged (biome on staged `.ts`) and `vitest run`.
 
-## Not covered
-
-- `src/getFilteredReposWithPackageForOrg.ts` (search, pagination, dedupe, archived and stale filtering) has no test.
-- Nothing talks to the real GitHub API. Tests replace `src/octokitInit.ts` (throttling, retry) with `src/__mocks__/octokitInit.ts`.
-- `bin/cli.ts` (flag parsing, config fallback, `--output`) and `repo-scripts/*` have no tests.
-- Type errors and biome findings: neither `typecheck` nor `check` runs in CI.
-- Nothing checks the published tarball or runs `lib/bin/cli.js` before `npm publish`.
-
 ## Where to be careful
 
 - Releases are not automatic. `npm run semantic-release` is `repo-scripts/npm-release.ts`: it publishes the version in package.json and exits 0 if that version is already on npm. A merge without a version bump publishes nothing; a version bump on `main` publishes right away.
